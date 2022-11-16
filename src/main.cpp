@@ -15,11 +15,11 @@ WiFiClient wifi;
 Adafruit_SSD1306 oled(128,32, &Wire,-1);
 
 String users[128];
-String selUser = "";
+String selUser = "Dummy";
 int userCycleCount = 0;
 int userCount = 0;
 
-String selBathroom = "ninja_warrior_RWC";
+String selBathroom = "ninja_warrior";
 unsigned long lastCleaned = 0;
 uint32 timediff = 0;
 unsigned long prevMillis = 0;
@@ -58,6 +58,7 @@ void sendStamp(){
     if(http.POST(sendMsg) == 200){
       http.end();   
       lastCleaned = 0;
+      prevMillis = millis();
       oled.println(selUser + " rengjorde ");
       oled.print(selBathroom);
       oled.display();
@@ -75,33 +76,33 @@ void sendStamp(){
     oled.display();
   }
 }
-void getUsers(){
+// void getUsers(){
   
-  if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    String user = "";
-    String userString = "";
-    http.begin(wifi, host + "/GetUsers");
-    if(http.GET() == 200){ 
-      userString += http.getString();
-    }
-    http.end();
+//   if (WiFi.status() == WL_CONNECTED) {
+//     HTTPClient http;
+//     String user = "";
+//     String userString = "";
+//     http.begin(wifi, host + "/GetUsers");
+//     if(http.GET() == 200){ 
+//       userString += http.getString();
+//     }
+//     http.end();
     
-    if (userString.length() > 0){
-    for (int i = 0; i<=userString.length()-1; i++){
-      if(userString[i] != ','){
-        user+=userString[i];
-      }
+//     if (userString.length() > 0){
+//     for (int i = 0; i<=userString.length()-1; i++){
+//       if(userString[i] != ','){
+//         user+=userString[i];
+//       }
       
-      else{
-      users[userCount] = user;
-      userCount+=1;
-      user = "";
-      }
-    }
-    }
-  }
-}
+//       else{
+//       users[userCount] = user;
+//       userCount+=1;
+//       user = "";
+//       }
+//     }
+//     }
+//   }
+// }
 // void getBathrooms(){
 //   if (WiFi.status() == WL_CONNECTED) {
 //     HTTPClient http;
@@ -165,45 +166,45 @@ void getUsers(){
 //     }
 // }
 // }
-void selectUser(){
-  oled.clearDisplay();
-  oled.setTextSize(1);
-  oled.setCursor(0,0);
-  if(userCount > 0){
-    selUser = users[userCycleCount%(userCount)];
-    oled.print(selUser);
-    oled.display();
-  }
-  else{
-    oled.print("Inga användare sparade");
-    oled.display();
-    delay(1000);
-    return;
-  }
-  delay(500);
-  while(true){
-    yield();
+// void selectUser(){
+//   oled.clearDisplay();
+//   oled.setTextSize(1);
+//   oled.setCursor(0,0);
+//   if(userCount > 0){
+//     selUser = users[userCycleCount%(userCount)];
+//     oled.print(selUser);
+//     oled.display();
+//   }
+//   else{
+//     oled.print("Inga användare sparade");
+//     oled.display();
+//     delay(1000);
+//     return;
+//   }
+//   delay(500);
+//   while(true){
+//     yield();
     
-    if (digitalRead(cyclePin) == HIGH){
-      userCycleCount+=1;
-      selUser = users[userCycleCount%(userCount)];
-      oled.clearDisplay();
+//     if (digitalRead(cyclePin) == HIGH){
+//       userCycleCount+=1;
+//       selUser = users[userCycleCount%(userCount)];
+//       oled.clearDisplay();
       
-      oled.setCursor(0,0);
-      oled.println(selUser);
-      oled.display();
-      delay(300);
+//       oled.setCursor(0,0);
+//       oled.println(selUser);
+//       oled.display();
+//       delay(300);
       
-    }
-    if (digitalRead(selectPin) == HIGH){
-      // selectBathroom(); //does not need to be selected. Will be hardcoded 
-      sendStamp();
-      oled.clearDisplay();
-      oled.display();
-      return;
-    }
-  }
-}
+//     }
+//     if (digitalRead(selectPin) == HIGH){
+//       // selectBathroom(); //does not need to be selected. Will be hardcoded 
+//       sendStamp();
+//       oled.clearDisplay();
+//       oled.display();
+//       return;
+//     }
+//   }
+// }
 
 void getLastCleaned(){
   if (WiFi.status() == WL_CONNECTED) {
@@ -241,7 +242,6 @@ void loop() {
   prevMillis = millis();
   timediff = lastCleaned;
   
-  // timediff = millis()-lastCleaned;
 
 
   unsigned long seconds = timediff / 1000;
@@ -254,12 +254,14 @@ void loop() {
   oled.print("Sist rengjord:\n" + String(hours) + "h " + String(minutes) + "min " + String(seconds) + "s sedan");
   oled.display();
   if(digitalRead(selectPin) == HIGH){
-    getUsers();
+    // getUsers();
     // getBathrooms();
-    selectUser();
+    // selectUser();
+    sendStamp();
+    
   }
+  
   delay(100); 
-
 }
 
 
