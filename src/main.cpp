@@ -5,7 +5,7 @@
 #include <ESP8266HTTPClient.h>
 
 #define cyclePin D6
-#define selectPin D5
+#define selectPin D7
 
 String SSID = "I.Carlsson_1";
 String pass = "92ac437921";
@@ -14,10 +14,10 @@ String host = "http://magge321.ddns.net:1307";
 WiFiClient wifi;
 Adafruit_SSD1306 oled(128,32, &Wire,-1);
 
-String users[128];
+// String users[128];
 String selUser = "Dummy";
-int userCycleCount = 0;
-int userCount = 0;
+// int userCycleCount = 0;
+// int userCount = 0;
 
 String selBathroom = "ninja_warrior";
 unsigned long lastCleaned = 0;
@@ -68,12 +68,14 @@ void sendStamp(){
       oled.setTextSize(1);
       oled.print("Server fel");
       oled.display();
+      delay(5000);
     }
   }
   else{
     oled.println("Kan inte spara.");
     oled.print("Inte kopplad till WiFi");
     oled.display();
+    delay(5000);
   }
 }
 // void getUsers(){
@@ -222,7 +224,7 @@ void setup() {
   Serial.begin(9600);
   Serial.println("SERIAL initialized");
   pinMode(selectPin,INPUT);
-  pinMode(cyclePin,INPUT);
+  // pinMode(cyclePin,INPUT);
   oled.begin(SSD1306_SWITCHCAPVCC,0x3C);
   oled.clearDisplay();
   oled.setTextSize(1);
