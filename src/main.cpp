@@ -15,7 +15,7 @@ WiFiClient wifi;
 Adafruit_SSD1306 oled(128,32, &Wire,-1);
 
 // String users[128];
-String selUser = "Dummy";
+// String selUser = "Dummy";
 // int userCycleCount = 0;
 // int userCount = 0;
 
@@ -53,20 +53,20 @@ void sendStamp(){
     oled.setCursor(0,0);
     if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    String sendMsg = String(selUser) + " " + selBathroom;
+    String sendMsg = selBathroom;
     http.begin(wifi, host + "/InsertStamp");
     if(http.POST(sendMsg) == 200){
       http.end();   
       lastCleaned = 0;
       prevMillis = millis();
-      oled.println(selUser + " rengjorde ");
+      oled.println("rengjorde ");
       oled.print(selBathroom);
       oled.display();
       delay(5000);
     }
     else{
       oled.setTextSize(1);
-      oled.print("Server fel");
+      oled.print("Server fel,\n kontakta Max");
       oled.display();
       delay(5000);
     }
