@@ -14,25 +14,18 @@ String host = "http://magge321.ddns.net:1307";
 WiFiClient wifi;
 Adafruit_SSD1306 oled(128,32, &Wire,-1);
 
-// String users[128];
-// String selUser = "Dummy";
-// int userCycleCount = 0;
-// int userCount = 0;
 
 String selBathroom = "ninja_warrior";
 unsigned long lastCleaned = 0;
 uint32 timediff = 0;
 unsigned long prevMillis = 0;
-//String bathrooms[128];
-// int wcCycleCount = 0;
-// int wcCount = 0;
 
 void connectWifi(){
   oled.clearDisplay();
   oled.setTextSize(1);
   oled.setCursor(0,0);
   
-  oled.println("Connecting to WiFi:");
+  oled.println("Ansluter till WiFi:");
   oled.println(SSID);
   oled.display();
   WiFi.begin(SSID,pass);
@@ -43,7 +36,8 @@ void connectWifi(){
     delay(500);
   }
   oled.display();
-  Serial.println("CONNECTED");
+  
+  // Serial.println("CONNECTED");
 }
 
 
@@ -52,28 +46,33 @@ void sendStamp(){
     oled.clearDisplay();
     oled.setCursor(0,0);
     if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    String sendMsg = selBathroom;
-    http.begin(wifi, host + "/InsertStamp");
-    if(http.POST(sendMsg) == 200){
-      http.end();   
-      lastCleaned = 0;
-      prevMillis = millis();
-      oled.println("rengjorde ");
-      oled.print(selBathroom);
-      oled.display();
-      delay(5000);
-    }
-    else{
-      oled.setTextSize(1);
-      oled.print("Server fel,\n kontakta Max");
-      oled.display();
-      delay(5000);
-    }
+      HTTPClient http;
+      String sendMsg = selBathroom;
+      http.begin(wifi, host + "/InsertStamp");
+      if(http.POST(sendMsg) == 200){
+        http.end();   
+        lastCleaned = 0;
+        prevMillis = millis();
+        oled.println("rengjorde ");
+        oled.print(selBathroom);
+        oled.display();
+        delay(5000);
+      }
+      else{
+        oled.setTextSize(1);
+        oled.print("Server fel,\n kontakta Personalen");
+        oled.display();
+        delay(5000);
+      }
   }
   else{
-    oled.println("Kan inte spara.");
-    oled.print("Inte kopplad till WiFi");
+    // oled.println("Kan inte spara.");
+    // oled.print("Inte kopplad till WiFi");
+    connectWifi();
+    oled.clearDisplay();
+    oled.setTextSize(1);
+    oled.setCursor(0,0);
+    oled.print("Ansluten! Spara igen");
     oled.display();
     delay(5000);
   }
@@ -221,8 +220,8 @@ void getLastCleaned(){
 
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("SERIAL initialized");
+  // Serial.begin(9600);
+  // Serial.println("SERIAL initialized");
   pinMode(selectPin,INPUT);
   // pinMode(cyclePin,INPUT);
   oled.begin(SSD1306_SWITCHCAPVCC,0x3C);
@@ -265,12 +264,3 @@ void loop() {
   
   delay(100); 
 }
-
-
-
-
-
-
-
-
-
