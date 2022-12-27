@@ -9,13 +9,14 @@
 
 String SSID = "I.Carlsson_1";
 String pass = "92ac437921";
-String host = "http://magge321.ddns.net:1307";
+String host = "http://13.53.168.240:1307";
 
 WiFiClient wifi;
 Adafruit_SSD1306 oled(128,32, &Wire,-1);
 
 
 String selBathroom = "ninja_warrior";
+String displayRoom = "Ninja Warrior";
 unsigned long lastCleaned = 0;
 uint32 timediff = 0;
 unsigned long prevMillis = 0;
@@ -45,6 +46,7 @@ void connectWifi(){
 void sendStamp(){
     oled.clearDisplay();
     oled.setCursor(0,0);
+    oled.setTextSize(2);
     if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http;
       String sendMsg = selBathroom;
@@ -53,28 +55,30 @@ void sendStamp(){
         http.end();   
         lastCleaned = 0;
         prevMillis = millis();
-        oled.println("rengjorde ");
-        oled.print(selBathroom);
+        oled.println("Rengjorde ");
+        oled.print(displayRoom);
         oled.display();
         delay(5000);
       }
       else{
-        oled.setTextSize(1);
-        oled.print("Server fel,\n kontakta Personalen");
+        lastCleaned = 0;
+        prevMillis = millis();
+        oled.print("Server fel\nRing Max");
         oled.display();
         delay(5000);
       }
   }
   else{
-    // oled.println("Kan inte spara.");
-    // oled.print("Inte kopplad till WiFi");
+    lastCleaned = 0;
+    prevMillis = millis();
     connectWifi();
+    
     oled.clearDisplay();
-    oled.setTextSize(1);
     oled.setCursor(0,0);
     oled.print("Ansluten! Spara igen");
     oled.display();
     delay(5000);
+    
   }
 }
 // void getUsers(){
@@ -238,6 +242,7 @@ void setup() {
 void loop() {
   oled.clearDisplay();
   oled.setCursor(0,0);
+  oled.setTextSize(2);
 
   lastCleaned += millis() - prevMillis;
   prevMillis = millis();
@@ -252,7 +257,8 @@ void loop() {
   seconds %= 60;
   minutes %= 60;
   hours %= 24;
-  oled.print("Sist rengjord:\n" + String(hours) + "h " + String(minutes) + "min " + String(seconds) + "s sedan");
+  // oled.print("Sist rengjord:\n" + String(hours) + "h " + String(minutes) + "min " + String(seconds) + "s sedan");
+  oled.print(String(hours) + "h " + String(minutes) + "min");
   oled.display();
   if(digitalRead(selectPin) == HIGH){
     // getUsers();
