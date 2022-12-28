@@ -256,7 +256,7 @@ void loop() {
   timediff %= 1000;
   seconds %= 60;
   minutes %= 60;
-  hours %= 24;
+  // hours %= 24;
   // oled.print("Sist rengjord:\n" + String(hours) + "h " + String(minutes) + "min " + String(seconds) + "s sedan");
   oled.print(String(hours) + "h " + String(minutes) + "min");
   oled.display();
