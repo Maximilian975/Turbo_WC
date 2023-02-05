@@ -7,9 +7,9 @@
 #define cyclePin D6
 #define selectPin D7
 
-String SSID = "I.Carlsson_1";
-String pass = "92ac437921";
-String host = "http://13.53.168.240:1307";
+String SSID = "Turbo Sports Personal";
+String pass = "TeamTurbo2016";
+String host = "http://143.42.27.128:1307";
 
 WiFiClient wifi;
 Adafruit_SSD1306 oled(128,32, &Wire,-1);
